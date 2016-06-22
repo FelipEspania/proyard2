@@ -7,13 +7,13 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
     <script src="https://www.gstatic.com/firebasejs/live/3.0/firebase.js"></script>
     <script src="/js/firebase.js"></script>
 
     <title>Proyecto Arduino</title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
     <link href="/img/favicon.ico" rel="icon" type="image/x-icon" />
     <style>
     body {
@@ -41,7 +41,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#">Historico</a>
+                <a class="navbar-brand" href="index.html">Historico</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
@@ -52,7 +52,7 @@
                         <a href="humedad.html">Humedad</a>
                     </li>
                     <li>
-                        <a href="temperatura.html">Temperatura</a>
+                        <a href="#">Temperatura</a>
                     </li>
                 </ul>
             </div>
@@ -64,23 +64,8 @@
 
         <div class="row">
             <div class="col-lg-12 text-center">
-                <div class="jumbotron">
-                    <h1>Historico</h1>
-                </div>
-                <table id="tabla_hum" class="table table-condensed">
-                    <tr class="active">
-                        <td><b>Fecha</b></td>
-                        <td><b>Hora</b></td>
-                        <td><b>Valor</b></td>
-                    </tr>
-                </table>
-                <table id="tabla_temp" class="table table-condensed">
-                    <tr class="active">
-                        <td><b>Fecha</b></td>
-                        <td><b>Hora</b></td>
-                        <td><b>Valor</b></td>
-                    </tr>
-                </table>
+                <div class="jumbotron"><h1>Temperatura</h1></div>
+                <canvas id="myChart"></canvas>
             </div>
         </div>
 
@@ -88,52 +73,68 @@
 
     <!-- jQuery Version 1.11.1 -->
     <script src="/js/jquery.js"></script>
-    <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="/js/bootstrap.min.js"></script>
 
         <!-- Charts Core (Graphics) JavaScript -->
+    <script src="/js/Chart.js"></script>
     <script>
-    var db = firebase.database();
+        var f = new Date();
+        var month = f.getMonth()+1;
+        if (month<10) {month="0"+month}
+        var fecha = f.getFullYear() + "-" + month + "-" + f.getDate();
 
-    var f = new Date();
-    var month = f.getMonth()+1;
-    if (month<10) {month="0"+month}
-    var fecha = f.getFullYear() + "-" + month + "-" + f.getDate();
+        var db = firebase.database();
+        db.ref("temperatura/"+fecha).limitToLast(6).on("value", function (snapshot){
+            resultado = snapshot.val();
+            console.log(resultado);
+            var array_valor = [];
+            var array_hora = [];
 
-    db.ref("humedad/"+fecha).on("value", function(snapshot){
-        resultado = snapshot.val();
-        console.log(resultado);
-
-        $.each(resultado, function(i,item){
-            var table = document.getElementById('tabla_hum');
-            var row = table.insertRow(1);
-            var cell_fecha = row.insertCell(0);
-            var cell_hora = row.insertCell(1);
-            var cell_valor = row.insertCell(2);
-            cell_fecha.innerHTML = resultado[i].fecha;
-            cell_hora.innerHTML = resultado[i].hora;
-            cell_valor.innerHTML = resultado[i].valor;
+            $.each(resultado, function(i,item){
+                array_valor.push(resultado[i].valor);
+                array_hora.push(resultado[i].hora);
+            });
+            var ctx = document.getElementById("myChart");
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: array_hora,
+                    datasets: [{
+                        label: '# Temperatura',
+                        data: array_valor,
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255,99,132,1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero:true
+                            }
+                        }]
+                    }
+                }
+            });
         });
-
-    db.ref("temperatura/"+fecha).on("value", function(snapshot){
-        resultado1 = snapshot.val();
-        console.log(resultado1);
-
-        $.each(resultado1, function(i,item){
-            var table1 = document.getElementById('tabla_temp');
-            var row1 = table1.insertRow(1);
-            var cell_fecha1 = row1.insertCell(0);
-            var cell_hora1 = row1.insertCell(1);
-            var cell_valor1 = row1.insertCell(2);
-            cell_fecha1.innerHTML = resultado1[i].fecha;
-            cell_hora1.innerHTML = resultado1[i].hora;
-            cell_valor1.innerHTML = resultado1[i].valor;
-        })
-    })
-
-    });//db.ref..
     </script>
 </body>
+
 </html>
