@@ -66,6 +66,8 @@
             <div class="col-lg-12 text-center">
                 <div class="jumbotron">
                     <h1>Historico</h1>
+                    <div id="alerta1"></div>
+                    <div id="alerta2"></div>
                 </div>
                 <table id="tabla_hum" class="table table-condensed">
                     <tr class="active">
@@ -105,32 +107,39 @@
     db.ref("humedad/"+fecha).on("value", function(snapshot){
         resultado = snapshot.val();
         console.log(resultado);
-
-        $.each(resultado, function(i,item){
-            var table = document.getElementById('tabla_hum');
-            var row = table.insertRow(1);
-            var cell_fecha = row.insertCell(0);
-            var cell_hora = row.insertCell(1);
-            var cell_valor = row.insertCell(2);
-            cell_fecha.innerHTML = resultado[i].fecha;
-            cell_hora.innerHTML = resultado[i].hora;
-            cell_valor.innerHTML = resultado[i].valor;
-        });
+        if (resultado) {
+            $.each(resultado, function(i,item){
+                var table = document.getElementById('tabla_hum');
+                var row = table.insertRow(1);
+                var cell_fecha = row.insertCell(0);
+                var cell_hora = row.insertCell(1);
+                var cell_valor = row.insertCell(2);
+                cell_fecha.innerHTML = resultado[i].fecha;
+                cell_hora.innerHTML = resultado[i].hora;
+                cell_valor.innerHTML = resultado[i].valor;
+            });
+        }else{
+            document.getElementById('alerta1').innerHTML = "<div class='alert alert-danger' role='alert'><h3><strong>Warning! </strong>Sin datos historia para Humedad</h3></div>";
+        }
 
     db.ref("temperatura/"+fecha).on("value", function(snapshot){
         resultado1 = snapshot.val();
         console.log(resultado1);
 
-        $.each(resultado1, function(i,item){
-            var table1 = document.getElementById('tabla_temp');
-            var row1 = table1.insertRow(1);
-            var cell_fecha1 = row1.insertCell(0);
-            var cell_hora1 = row1.insertCell(1);
-            var cell_valor1 = row1.insertCell(2);
-            cell_fecha1.innerHTML = resultado1[i].fecha;
-            cell_hora1.innerHTML = resultado1[i].hora;
-            cell_valor1.innerHTML = resultado1[i].valor;
-        })
+        if (resultado1) {
+            $.each(resultado1, function(i,item){
+                var table1 = document.getElementById('tabla_temp');
+                var row1 = table1.insertRow(1);
+                var cell_fecha1 = row1.insertCell(0);
+                var cell_hora1 = row1.insertCell(1);
+                var cell_valor1 = row1.insertCell(2);
+                cell_fecha1.innerHTML = resultado1[i].fecha;
+                cell_hora1.innerHTML = resultado1[i].hora;
+                cell_valor1.innerHTML = resultado1[i].valor;
+        });
+        }else{
+            document.getElementById('alerta2').innerHTML = "<div class='alert alert-danger' role='alert'><h3><strong>Warning! </strong>Sin datos historia para Temperatura</h3></div>";
+        }
     })
 
     });//db.ref..

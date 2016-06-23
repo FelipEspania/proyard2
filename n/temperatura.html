@@ -64,7 +64,10 @@
 
         <div class="row">
             <div class="col-lg-12 text-center">
-                <div class="jumbotron"><h1>Temperatura</h1></div>
+                <div class="jumbotron">
+                    <h1>Temperatura</h1>
+                    <div id="alerta1"></div>
+                </div>
                 <canvas id="myChart"></canvas>
             </div>
         </div>
@@ -89,6 +92,8 @@
         db.ref("temperatura/"+fecha).limitToLast(6).on("value", function (snapshot){
             resultado = snapshot.val();
             console.log(resultado);
+
+            if (resultado) {
             var array_valor = [];
             var array_hora = [];
 
@@ -132,8 +137,12 @@
                         }]
                     }
                 }
-            });
-        });
+            });//var mychart
+        }
+        else{
+            document.getElementById('alerta1').innerHTML = "<div class='alert alert-danger' role='alert'><h3><strong>Warning! </strong>Sin datos Temperatura</h3></div>";
+        }
+        });//db.ref
     </script>
 </body>
 

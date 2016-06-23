@@ -52,7 +52,7 @@
                         <a href="#">Humedad</a>
                     </li>
                     <li>
-                        <a href="temperatura.html">Temperatu</a>
+                        <a href="temperatura.html">Temperatura</a>
                     </li>
                 </ul>
             </div>
@@ -64,7 +64,10 @@
 
         <div class="row">
             <div class="col-lg-12 text-center">
-                <div class="jumbotron"><h1>Humedad</h1></div>
+                <div class="jumbotron">
+                    <h1>Humedad</h1>
+                    <div id="alerta1"></div>
+                </div>
                 <canvas id="myChart"></canvas>
             </div>
         </div>
@@ -89,6 +92,9 @@
         db.ref("humedad/"+fecha).limitToLast(6).on("value", function (snapshot){
             resultado = snapshot.val();
             console.log(resultado);
+
+            if (resultado){
+
             var array_valor = [];
             var array_hora = [];
 
@@ -132,8 +138,12 @@
                         }]
                     }
                 }
-            });
-        });
+            });//var mychart
+        }
+        else{
+            document.getElementById('alerta1').innerHTML = "<div class='alert alert-danger' role='alert'><h3><strong>Warning! </strong>Sin datos Humedad</h3></div>";
+        }
+        });//db.ref
     </script>
 </body>
 
