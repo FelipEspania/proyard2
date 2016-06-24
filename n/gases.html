@@ -45,10 +45,10 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li>
-                        <a href="#">Movimiento</a>
+                        <a href="movimiento.html">Movimiento</a>
                     </li>
                     <li>
-                        <a href="gases.html">Gases</a>
+                        <a href="#">Gases</a>
                     </li>
                     <li>
                         <a href="humedad.html">Humedad</a>
@@ -67,9 +67,9 @@
         <div class="row">
             <div class="col-lg-12 text-center">
                 <div class="jumbotron">
-                    <h1>Movimiento en tiempo real</h1>
+                    <h1>Gases en tiempo real</h1>
                     <div id="alerta1"></div>
-                    <h1 id="mov"></h1>
+                    <h1 id="hum"></h1>
                 </div>
             </div>
         </div>
@@ -91,7 +91,7 @@
     
     var db = firebase.database();
 
-    db.ref("movimiento/" + fecha).on("value", function(snapshot){
+    db.ref("gases/" + fecha).on("value", function(snapshot){
         resultado = snapshot.val();
         console.log(resultado);
 
@@ -99,13 +99,13 @@
 
         $.each(resultado, function(i,item){
             if (resultado[i].valor == 1) {
-                document.getElementById('mov').innerHTML = "<div class='alert alert-danger' role='alert'><strong>¡</strong>Se detecto movimiento<strong>!</strong></div>";
+                document.getElementById('hum').innerHTML = "<div class='alert alert-danger' role='alert'><strong>¡</strong>Se detectaron Gases<strong>!</strong></div>";
             }else{
-                document.getElementById('mov').innerHTML = "<div class='alert alert-success' role='alert'>Sin movimiento</div>";
+                document.getElementById('hum').innerHTML = "<div class='alert alert-success' role='alert'>Sin Gases detectados</div>";
             }
         });
-        } else{
-            document.getElementById('alerta1').innerHTML = "<div class='alert alert-danger' role='alert'><h3><strong>Warning! </strong>Sin datos de Movimiento</h3></div>";
+        }else{
+            document.getElementById('alerta1').innerHTML = "<div class='alert alert-danger' role='alert'><h3><strong>Warning! </strong>Sin datos de Gases</h3></div>";
         }
     });//db.ref..
     </script>
